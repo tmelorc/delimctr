@@ -28,8 +28,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 clear
-input_file=/home/thiago/Dropbox/thiago-modelo-tematico[2017].tex
-#input_file=$1
+input_file=$1
 echo -e "Checking delimiters on file \033[1;34m${input_file}"
 
 o_brace=$(grep  -o "{" ${input_file} | wc -l)

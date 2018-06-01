@@ -27,10 +27,18 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+delimctr="delimctr"
+thiago="Thiago de Melo"
+github="https://github.com/tmelorc/delimctr"
+
 clear
+
 input_file=$1
 
-printf "Checking delimiters on file: \\033[1;34m%s\\n" "${input_file}"
+printf "This is %s. Created by %s.\\n" "${delimctr^^}" "$thiago"
+printf "Visit %s for updates\\n\\n" "$github"
+
+printf "Checking delimiters on file:\\n\\033[1;34m%s\\n" "${input_file}"
 
 o_brace=$(grep  -o '{' "${input_file}" | wc -l)
 c_brace=$(grep  -o '}' "${input_file}" | wc -l)

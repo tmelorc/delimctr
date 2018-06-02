@@ -31,10 +31,13 @@ delimctr="delimctr"
 thiago="Thiago de Melo"
 github="https://github.com/tmelorc/delimctr"
 
+input_file=$1
+
 while getopts "i" opt; do
   case $opt in
     i)
-      ignore=true
+      ignore="true"
+      input_file=$2
       ;;
     \?)
       echo "Invalid option: -$OPTARG."
@@ -48,17 +51,15 @@ done
 
 clear
 
-input_file=$1
-
 printf "This is %s. Created by %s.\\n" "${delimctr^^}" "$thiago"
 printf "Visit %s for updates\\n\\n" "$github"
 
 printf "Checking delimiters on file:\\n\\033[1;34m%s\\n" "${input_file}"
-[ "$ignore" = "true" ] && 
+[[ "$ignore" == "true" ]] && 
 printf '\033[0;31m'"** Ignoring commented lines\\n"
 
 
-if [ "$ignore" = "true" ]; then
+if [[ "$ignore" = "true" ]]; then
 o_brace=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '{'  | wc -l)
 c_brace=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '}'  | wc -l)
 o_bracket=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '\['  | wc -l)

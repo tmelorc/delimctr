@@ -31,6 +31,21 @@ delimctr="delimctr"
 thiago="Thiago de Melo"
 github="https://github.com/tmelorc/delimctr"
 
+while getopts "i" opt; do
+  case $opt in
+    i)
+      ignore=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG."
+      exit 1
+      ;;
+	:)
+	  echo "Option -$OPTARG requires an argument." && exit 1
+	  ;;
+  esac
+done
+
 clear
 
 input_file=$1
@@ -39,17 +54,28 @@ printf "This is %s. Created by %s.\\n" "${delimctr^^}" "$thiago"
 printf "Visit %s for updates\\n\\n" "$github"
 
 printf "Checking delimiters on file:\\n\\033[1;34m%s\\n" "${input_file}"
+[ "$ignore" = "true" ] && 
+printf '\033[0;31m'"** Ignoring commented lines\\n"
 
+
+if [ "$ignore" = "true" ]; then
+o_brace=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '{'  | wc -l)
+c_brace=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '}'  | wc -l)
+o_bracket=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '\['  | wc -l)
+c_bracket=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '\]'  | wc -l)
+o_paren=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o '('  | wc -l)
+c_paren=$(grep '^[[:blank:]]*[^[:blank:]%]' "${input_file}" | grep  -o ')'  | wc -l)
+else
 o_brace=$(grep  -o '{' "${input_file}" | wc -l)
 c_brace=$(grep  -o '}' "${input_file}" | wc -l)
-gap_brace=$(( o_brace - c_brace ))
-
 o_bracket=$(grep  -o '\[' "${input_file}" | wc -l)
 c_bracket=$(grep  -o '\]' "${input_file}" | wc -l)
-gap_bracket=$(( o_bracket - c_bracket ))
-
 o_paren=$(grep  -o '(' "${input_file}" | wc -l)
 c_paren=$(grep  -o ')' "${input_file}" | wc -l)
+fi
+
+gap_brace=$(( o_brace - c_brace ))
+gap_bracket=$(( o_bracket - c_bracket ))
 gap_paren=$(( o_paren - c_paren ))
 
 printf '\033[1;37m'""

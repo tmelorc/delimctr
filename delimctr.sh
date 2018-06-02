@@ -77,15 +77,52 @@ if [ "$item" != 0 ]; then
     echo -n $item_lineno
 fi
 
+l_paren=0
+r_paren=0
+[ "$gap_paren" != 0 ] && l_paren=$(grep -c -E '\\left\(' "${input_file}")
+[ "$gap_paren" != 0 ] && r_paren=$(grep -c -E '\\right\)' "${input_file}")
+if [ "$l_paren" != 0 ] || [ "$r_paren" != 0 ]; then
+    l_lineno=$(grep -n -E '\\left\(' "$input_file" | grep -Eo '^[^:]+')
+    r_lineno=$(grep -n -E '\\right\)' "$input_file" | grep -Eo '^[^:]+')
+    printf "\\n\\n** left( or right) found; it could use unpaired ( ); not a problem\\n** see lines: "
+    echo -n $l_lineno $r_lineno
+fi
+
 printf '\033[1;37m'"\\n"
 printf             "\\n  opening brackets [  %d" "${o_bracket}"
 printf             "\\nclosening brackets ]  %d" "${c_bracket}"
 [ $gap_bracket != 0 ] && 
 printf '\033[1;31m'"\\n  missing or extra    %d" "${gap_bracket#-}"
 
+l_bracket=0
+r_bracket=0
+[ "$gap_bracket" != 0 ] && l_bracket=$(grep -c -E '\\left\[' "${input_file}")
+[ "$gap_bracket" != 0 ] && r_bracket=$(grep -c -E '\\right\]' "${input_file}")
+if [ "$l_bracket" != 0 ] || [ "$r_bracket" != 0 ]; then
+    l_lineno=$(grep -n -E '\\left\[' "$input_file" | grep -Eo '^[^:]+')
+    r_lineno=$(grep -n -E '\\right\]' "$input_file" | grep -Eo '^[^:]+')
+    printf "\\n\\n** left[ or right] found; it could use unpaired [ ]; not a problem\\n** see lines: "
+    echo -n $l_lineno $r_lineno
+fi
+
+
 printf '\033[1;37m'"\\n"
 printf             "\\n  opening braces { %d" "${o_brace}"
 printf             "\\nclosening braces } %d" "${c_brace}"
 [ $gap_brace != 0 ] && 
 printf '\033[1;31m'"\\nmissing or extra   %d" "${gap_brace#-}"
+
+l_brace=0
+r_brace=0
+[ "$gap_brace" != 0 ] && l_brace=$(grep -c -E '\\left\\{' "${input_file}")
+[ "$gap_brace" != 0 ] && r_brace=$(grep -c -E '\\right\\}' "${input_file}")
+if [ "$l_brace" != 0 ] || [ "$r_brace" != 0 ]; then
+    l_lineno=$(grep -n -E '\\left\\{' "$input_file" | grep -Eo '^[^:]+')
+    r_lineno=$(grep -n -E '\\right\\}' "$input_file" | grep -Eo '^[^:]+')
+    printf "\\n\\n** left\{ or right\} found; it could use unpaired { }; not a problem\\n** see lines: "
+    echo -n $l_lineno $r_lineno
+fi
+
+#
 printf '\033[0;37m'"\\n\\n"
+## end of file delimctr.sh

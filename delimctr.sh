@@ -31,13 +31,15 @@ delimctr="delimctr"
 thiago="Thiago de Melo"
 github="https://github.com/tmelorc/delimctr"
 
-input_file=$1
+input_file=${@: -1}
 
-while getopts "i" opt; do
+while getopts "ic" opt; do
   case $opt in
     i)
       ignore="true"
-      input_file=$2
+      ;;
+    c)
+      color="false"
       ;;
     \?)
       echo "Invalid option: -$OPTARG."
@@ -49,14 +51,21 @@ while getopts "i" opt; do
   esac
 done
 
+if [ "$color" != "false" ]; then
+      Red='\033[0;31m'          # Red
+      BRed='\033[1;31m'         # Red
+      BBlue='\033[1;34m'        # Blue
+      BWhite='\033[1;37m'       # White
+      off='\033[0m'             # off
+fi
 clear
 
 printf "This is %s. Created by %s.\\n" "${delimctr^^}" "$thiago"
 printf "Visit %s for updates\\n\\n" "$github"
 
-printf "Checking delimiters on file:\\n\\033[1;34m%s\\n" "${input_file}"
+printf "Checking delimiters on file:\\n${BBlue}%s\\n" "${input_file}"
 [[ "$ignore" == "true" ]] && 
-printf '\033[0;31m'"** Ignoring commented lines\\n"
+printf "${Red}** Ignoring commented lines\\n"
 
 
 if [[ "$ignore" = "true" ]]; then
@@ -79,11 +88,11 @@ gap_brace=$(( o_brace - c_brace ))
 gap_bracket=$(( o_bracket - c_bracket ))
 gap_paren=$(( o_paren - c_paren ))
 
-printf '\033[1;37m'""
-printf             "\\n  opening parentheses (  %d" "${o_paren}"
-printf             "\\nclosening parentheses )  %d" "${c_paren}"
+printf ${BWhite}""
+printf        "\\nopening parenthesis (  %d" "${o_paren}"
+printf        "\\nclosing parenthesis )  %d" "${c_paren}"
 [ $gap_paren != 0 ] && 
-printf '\033[1;31m'"\\n     missing or extra    %d" "${gap_paren#-}"
+printf ${BRed}"\\n   missing or extra    %d" "${gap_paren#-}"
 
 xymatrix=0
 [ $gap_paren != 0 ] && xymatrix=$(grep -c -o 'xymatrix' "${input_file}" )
@@ -92,7 +101,7 @@ if [ "$xymatrix" != 0 ]; then
     r_hook=$(grep -o '\^{)}' "${input_file}" | wc -l)
     l_hook_lineno=$(grep -n '\^{(}' "${input_file}" | grep -Eo '^[^:]+')
     r_hook_lineno=$(grep -n '\^{)}' "${input_file}" | grep -Eo '^[^:]+')
-    [ "$r_hook" != 0 ] || [ "$l_hook" != 0 ] && printf "\\n\\n** xymatrix inclusion arrows found; it uses unpaired ( )\\n** see lines: "
+    [ "$r_hook" != 0 ] || [ "$l_hook" != 0 ] && printf "\\n\\n** xymatrix inclusion arrows found; it uses unpaired ( )\\n** see line(s): "
     echo -n $l_hook_lineno $r_hook_lineno
 fi
 
@@ -100,7 +109,7 @@ item=0
 [ "$gap_paren" != 0 ] && item=$(grep -c -E '\s*\[\s*\w+\)\s*\]' "${input_file}")
 if [ "$item" != 0 ]; then
     item_lineno=$(grep -n -E '\s*\[\s*\w+\)\s*\]' "$input_file" | grep -Eo '^[^:]+')
-    printf "\\n\\n** labeled items found; it could use unpaired ( )\\n** see lines: "
+    printf "\\n\\n** labeled items found; it could use unpaired ( )\\n** see line(s): "
     echo -n $item_lineno
 fi
 
@@ -111,15 +120,15 @@ r_paren=0
 if [ "$l_paren" != 0 ] || [ "$r_paren" != 0 ]; then
     l_lineno=$(grep -n -E '\\left\(' "$input_file" | grep -Eo '^[^:]+')
     r_lineno=$(grep -n -E '\\right\)' "$input_file" | grep -Eo '^[^:]+')
-    printf "\\n\\n** left( or right) found; it could use unpaired ( ); not a problem\\n** see lines: "
+    printf "\\n\\n** left( or right) found; it could use unpaired ( ); not a problem\\n** see line(s): "
     echo -n $l_lineno $r_lineno
 fi
 
-printf '\033[1;37m'"\\n"
-printf             "\\n  opening brackets [  %d" "${o_bracket}"
-printf             "\\nclosening brackets ]  %d" "${c_bracket}"
+printf ${BWhite}"\\n"
+printf        "\\nopening brackets [  %d" "${o_bracket}"
+printf        "\\nclosing brackets ]  %d" "${c_bracket}"
 [ $gap_bracket != 0 ] && 
-printf '\033[1;31m'"\\n  missing or extra    %d" "${gap_bracket#-}"
+printf ${BRed}"\\nmissing or extra    %d" "${gap_bracket#-}"
 
 l_bracket=0
 r_bracket=0
@@ -133,11 +142,11 @@ if [ "$l_bracket" != 0 ] || [ "$r_bracket" != 0 ]; then
 fi
 
 
-printf '\033[1;37m'"\\n"
-printf             "\\n  opening braces { %d" "${o_brace}"
-printf             "\\nclosening braces } %d" "${c_brace}"
+printf ${BWhite}"\\n"
+printf        "\\n  opening braces { %d" "${o_brace}"
+printf        "\\n  closing braces } %d" "${c_brace}"
 [ $gap_brace != 0 ] && 
-printf '\033[1;31m'"\\nmissing or extra   %d" "${gap_brace#-}"
+printf ${BRed}"\\nmissing or extra   %d" "${gap_brace#-}"
 
 l_brace=0
 r_brace=0
@@ -146,10 +155,10 @@ r_brace=0
 if [ "$l_brace" != 0 ] || [ "$r_brace" != 0 ]; then
     l_lineno=$(grep -n -E '\\left\\{' "$input_file" | grep -Eo '^[^:]+')
     r_lineno=$(grep -n -E '\\right\\}' "$input_file" | grep -Eo '^[^:]+')
-    printf "\\n\\n** left\{ or right\} found; it could use unpaired { }; not a problem\\n** see lines: "
+    printf "\\n\\n** left\{ or right\} found; it could use unpaired { }; not a problem\\n** see line(s): "
     echo -n $l_lineno $r_lineno
 fi
 
 #
-printf '\033[0;37m'"\\n\\n"
+printf ${off}"\\n\\n"
 ## end of file delimctr.sh

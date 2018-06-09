@@ -106,8 +106,6 @@ if __name__ == '__main__':
     print '%s\n%s\n%s\n' % (text1,text2,dashed_line)
     
     input_file = sys.argv[1]
-    #input_file = '/home/thiago/fastex-temp.tex'
-    #input_file='/home/thiago/Dropbox/pesquisa/obstruction/transversality-01.tex'
     
     with open(input_file, 'r') as myfile:
         data = myfile.read()

@@ -1,12 +1,20 @@
 # delimctr
-Bash script to check and count mismatching delimiters `(),[],{}` in a tex file.
+Bash script to check and count mismatching delimiters `(),[],{}` in a `.tex` file.
 
 To download `delimctr.sh`, open a terminal and type:
 
 `wget https://raw.githubusercontent.com/tmelorc/delimctr/master/delimctr.sh`
 
-Then, give execution permission with `chmod +x delimctr.sh`.
+Then, assign execute permission to it with `chmod +x delimctr.sh`.
 
-Usage: `./delimctr my_file.tex` or `./delimctr -i my_file.tex` to ignore commented lines
+Usage: `./delimctr [OPTION] [FILE]` where `[FILE]` is any `.tex` file (in fact, plain text file) and `[OPTION]` can be:
 
-TODO: (instructions to save it on PATH)
+  - `-i` to ignore commented lines
+  
+  - `-c` to disable colour
+
+To run `delimctr.sh` from any path, move the script to `bin` folder with
+
+`sudo mv delimctr.sh /usr/local/bin`
+
+and restart the terminal. After, simply use as `delimctr [OPTION] [FILE]`.

@@ -9,7 +9,7 @@ Then, assign execute permission to it with `chmod +x delimctr.sh`.
 
 Usage: `./delimctr [OPTION] [FILE]` where `[FILE]` is any `.tex` file (in fact, plain text file) and `[OPTION]` can be:
 
-  - `-i` to ignore commented lines
+  - `-i` to ignore commented lines (beginning with `%`)
   
   - `-c` to disable colour
 

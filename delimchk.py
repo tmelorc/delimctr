@@ -38,59 +38,59 @@ def is_matched(expression):
     >>> is_matched('[](){{{[]}}}')
     True
     """
-    opening = tuple('({[')
-    closing = tuple(')}]')
+    
+    opening = tuple('([')
+    closing = tuple(')]')
     mapping = dict(zip(opening, closing))
     queue = []
-
+    
     for letter in expression:
         if letter in opening:
             queue.append(mapping[letter])
         elif letter in closing:
             if not queue or letter != queue.pop():
                 return False
+    
     return not queue
 
 def find_parens(s):
-    ''' 
-    
-    ?problem if input_file has a single line?
-    '''
     
     toret = {}
     pstack = []
 
     for i, c in enumerate(s):
-        if c in '([{':
+        if c in '([':
             pstack.append(i)
-        elif c in ')]}':
+        elif c in ')]':
             if len(pstack) == 0:
-                print s[:i+1]
-                print "No matching closing parens at: " + str(i)
+                fc_arrow(s,i)
                 #raise IndexError("No matching closing parens at: " + str(i))
-            
-            toret[pstack.pop()] = i
-
+            else:
+                if c == ")" and s[pstack[-1]-1] == "\\" and s[pstack[-1]] == "[":
+                    fc_arrow(s,i)
+                if c == "]" and s[i-1] == "\\" and s[pstack[-1]] == "(":
+                    #fc_arrow(s,pstack[-1])
+                    None
+                else:
+                    toret[pstack.pop()] = i
+    
     if len(pstack) > 0:
-        tmp = 0
         for i in pstack:
-            j = i+1
-            while s[j] != "\n":
-                j -= 1
-            print s[j+1:i+1]
-            #print u"\u25B2".encode("utf-8")u"  \u2190".encode("utf-8")+
-            arrow = ' '*(i-j-1)+u"\u25B2".encode("utf-8")+'  *** no matching' # U+21Bx U+219x
-            print arrow
-            tmp = i+1
-            j = tmp
-            while s[j] != "\n":
-                j += 1
-            print s[tmp:j]
-            print 
+            #j = s[:i].rfind("\n")
+            #print s[j+1:i+1]
+            fc_arrow(s,i)
         
         #raise IndexError("No matching opening parens at: " + str(pstack.pop()))
 
     return toret
+
+def fc_arrow(s,i):
+    j = s[:i].rfind("\n")
+    jup = s[:j-1].rfind("\n")
+    print s[jup+1:j]
+    print s[j+1:i+1]
+    arrow = " "*(i-j-1)+u"\u25B2".encode("utf-8")+'  *** no matching'
+    print arrow
 
 if __name__ == '__main__':
     import sys
@@ -107,6 +107,7 @@ if __name__ == '__main__':
     
     input_file = sys.argv[1]
     #input_file = '/home/thiago/fastex-temp.tex'
+    #input_file='/home/thiago/Dropbox/pesquisa/obstruction/transversality-01.tex'
     
     with open(input_file, 'r') as myfile:
         data = myfile.read()

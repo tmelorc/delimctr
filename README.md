@@ -7,7 +7,7 @@ To download `delimctr.sh`, open a terminal and type:
 
 Then, assign execute permission to it with `chmod +x delimctr.sh`.
 
-Usage: `./delimctr [OPTION] [FILE]` where `[FILE]` is any `.tex` file (in fact, plain text file) and `[OPTION]` can be:
+Usage: `./delimctr [OPTIONS] [FILE]` where `[FILE]` is any `.tex` file (in fact, plain text file) and `[OPTIONS]` can be:
 
   - `-i` to ignore commented lines (beginning with `%`)
   
@@ -17,4 +17,4 @@ To run `delimctr.sh` from any path, move the script to `bin` folder with
 
 `sudo mv delimctr.sh /usr/local/bin`
 
-and restart the terminal. After, simply use as `delimctr [OPTION] [FILE]`.
+and restart the terminal. After, simply use as `delimctr [OPTIONS] [FILE]`.
